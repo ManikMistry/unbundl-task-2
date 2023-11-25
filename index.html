@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chocolate Hub</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="./Images/kindpng_862140.png" type="image/x-icon">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+  </head>
+  <body>
+    <!-- Main section -->
+    <section class="main-container" id="main-container">
+    </section>
+    <!-- Cart section -->
+    <div class="cart">
+      <div>
+        <h3 id="pack-summary" style="color: black;">Your Pack (0/8)</h3>
+        <ul id="pack-items">
+            <p>Add some Chocolates</p>
+        </ul>
+ 
+        <p>Total Price: <span id="total-price">0</span></p>
+      </div>
+      <div class="cart-img">
+        <img src="./Images/empty-cart.png" alt="..." style="margin-top: 90px;"/>
+        <img src="./Images/pngwing.com.png" alt="..." style="margin-top: 210px;"/>
+      </div>
+    </div>
+  </body>
+  <script>
+    let choclateList = [
+      {
+        name: "Chocolate Ice-cream",
+
+        price: 200.0,
+
+        image: "./Images/kindpng_493751.png",
+      },
+
+      {
+        name: "Chocobar",
+
+        price: 240.0,
+
+        image:  "./Images/kindpng_3849883.png",
+      },
+
+      {
+        name: " White chocolate",
+
+        price: 220.0,
+
+        image: "./Images/kindpng_7571819.png",
+      },
+
+      {
+        name: "Kit Kat (Choco)",
+
+        price: 260.0,
+
+        image: "./Images/kindpng_1967318.png",
+      },
+
+      {
+        name: "Straw Berry Chocolate",
+
+        price: 280.0,
+
+        image: "./Images/kindpng_862813.png",
+      },
+
+      {
+        name: "Mixed Strawberry(Creamy)",
+
+        price: 224.0,
+
+        image: "./Images/kindpng_862140.png",
+      },
+
+      {
+        name: "Kit Kat (Extra Penut)",
+
+        price: 300.0,
+
+        image: "/Images/kindpng_7889437.png",
+      },
+
+      {
+        name: "M Magnum",
+
+        price: 256.0,
+
+        image: "./Images/kindpng_175437.png",
+      },
+    ];
+    let packSize = 0;
+    const packItems = new Map();
+    const mainContainer=document.getElementById("main-container");
+    let cards="";
+    choclateList.forEach((choclate,index)=>{
+        let card=`<div class="product">
+        <div class="product__photo">
+          <div class="photo-container">
+            <div class="photo-main">
+              <div class="controls">
+                <i class="material-icons">share</i>
+                <i class="material-icons">favorite_border</i>
+              </div>
+              <img
+                src=${choclate.image}
+                alt="green apple slice"
+                style="height: 200px; margin-left: 80px"
+              />
+            </div>
+            <div class="photo-album">
+              <ul>
+                <li>
+                  <img src="./Images//kindpng_6982317.png" alt="green apple" />
+                </li>
+                <li>
+                  <img src="./Images/kindpng_1967358.png" alt="half apple" />
+                </li>
+                <li>
+                  <img src="./Images/kindpng_7889437.png" alt="green apple" />
+                </li>
+                <li>
+                  <img src="./Images/kindpng_1967318.png" alt="apple top" />
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="product__info">
+          <div class="title">
+            <h1>${choclate.name}</h1>
+            <span>Chocolate</span>
+          </div>
+          <div class="price">R$ <span>${choclate.price}</span></div>
+          <div class="description">
+            <h3>BENEFITS</h3>
+            <ul>
+              <li>Chocolates are nutricious</li>
+              <li>Chocolate reduce cardiovascular risks.</li>
+              <li>Chocolate boosts heart health with antiocidents</li>
+              <li>It reducing the risk of cardiovascular diseases.</li>
+            </ul>
+          </div>
+          <button class="buy--btn" onclick="addToPack('${choclate.name}', ${choclate.price})">
+            ADD TO CART
+          </button>
+        </div>
+      </div>`
+      cards +=card
+    })
+    mainContainer.innerHTML=cards;
+
+    function addToPack(choclate, price) {
+      if (packSize >= 8) {
+        alert("You have reached the maximum quantity!");
+        return;
+      }
+
+      packSize++;
+
+      document.getElementById(
+        "pack-summary"
+      ).innerText = `Your Pack (${packSize}/8)`;
+
+      if (packItems.has(choclate)) {
+        packItems.set(choclate, packItems.get(choclate) + price);
+      } else {
+        packItems.set(choclate, 1 * price);
+      }
+      console.log(packItems);
+      updatePackSummary();
+    }
+    function removeFromPack(choclate, price) {
+      if (!packItems.has(choclate)) {
+        return;
+      }
+
+      packSize--;
+
+      document.getElementById(
+        "pack-summary"
+      ).innerText = `Your Pack (${packSize}/8)`;
+
+      if (packItems.has(choclate) && packItems.get(choclate) > 0) {
+        packItems.set(choclate, packItems.get(choclate) - price);
+      }
+      if (packItems.get(choclate) == 0) {
+        packItems.delete(choclate);
+      }
+      console.log(packItems);
+      updatePackSummary();
+    }
+
+    function updatePackSummary() {
+      const packSummaryList = document.getElementById("pack-items");
+      packSummaryList.innerHTML = "";
+
+      let totalPrice = 0;
+
+      packItems.forEach((price, choclate) => {
+        const listItem = document.createElement("li");
+        listItem.innerHTML = `${choclate}: ${price} <button class="buy--btn1" onClick="removeFromPack('${choclate}', ${findChocolate(choclate).price})">Remove</button>`;
+        packSummaryList.appendChild(listItem);
+
+        // const price = document.querySelector(`[data-price="${price}"]`).getAttribute('data-price');
+        totalPrice += price;
+        console.log(totalPrice);
+      });
+      function findChocolate(choclateName){
+        return choclateList.find((choclate)=>choclate.name==choclateName)
+      }
+      console.log(totalPrice);
+      document.getElementById("total-price").innerText = totalPrice;
+    }
+  </script>
+</html>
